@@ -1,0 +1,31 @@
+{
+  "task": [
+    
+  ],
+  "habit": [
+    {
+      "name": "brush teeth",
+      "deadline": "tod",
+      "done": false,
+      "type": "habit"
+    },
+    {
+      "name": "brush teeth",
+      "deadline": "tod",
+      "done": false,
+      "type": "habit"
+    },
+    {
+      "name": "brush teeth",
+      "deadline": "tod",
+      "done": false,
+      "type": "habit"
+    },
+    {
+      "name": "brush teeth",
+      "deadline": "tod",
+      "done": false,
+      "type": "habit"
+    }
+  ]
+}
