@@ -1,8 +1,9 @@
 const express = require('express');
 const cors = require('cors');
 const tasksRouter = require('./routes/tasks');
+const habitsRouter = require('./routes/habits');
 const quotesRouter = require('./routes/quotes');
-const loginRouter = require('./routes/login');
+const usersRouter = require('./routes/users');
 
 const PORT = 3001;
 const app = express();
@@ -15,8 +16,9 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/tasks', tasksRouter);
+app.use('/api/habits', habitsRouter);
 app.use('/api/quotes', quotesRouter);
-app.use('api/login', loginRouter)
+app.use('/api/users', usersRouter)
 
 app.listen(PORT, (err) => {
     if (err) console.log(err);

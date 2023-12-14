@@ -1,44 +1,34 @@
 "use client";
 import { useEffect, useState } from "react";
 import DeleteButton from "../components/deleteButton";
-import { getData} from "@/app/components/server";
+import { getData } from "@/app/components/server";
 
-interface quote {
-  quote: String;
-  character: String;
-  anime: string;
-}
 interface task {
-  id: number;
+  _id: number;
   name: string;
   deadline: string;
-  done: boolean;
-  type: string;
 }
 
 export default function TaskDisplay(props: { id: string }) {
   const [showTask, setShowTask] = useState(false);
   const [tasks, setTasks] = useState<task[]>([]);
-  var task_to_display:task[] = []
+  const date = new Date();
+  let day = date.getDate();
+  let month = date.getMonth() + 1;
+  let year = date.getFullYear();
+
+  const TodayDate: string = `${day}-${month}-${year}`;
+  const TomDate: string = `${day + 1}-${month}-${year}`;
+
   useEffect(() => {
-    console.log(props.id);
     setShowTask(true);
     async function getDataforDisplay() {
-      const new_data1 = await getData();
-      if (props.id == "habit") {
-        var new_data: task[] = new_data1.habit;
-        if (new_data.length == 0) return null;
-        task_to_display = new_data
-      } else {
-        var new_data: task[] = new_data1.task;
-        if (new_data.length == 0) return null;
-        task_to_display = new_data?.filter(
-          (task) =>task.deadline === props.id && task.done === false
-        )
-      }
+      const tasksFromAPI = await getData();
+      const task_to_display = tasksFromAPI.filter(
+        (e) => e.deadline === TodayDate
+      );
       setTasks(task_to_display);
     }
-
     getDataforDisplay();
   }, []);
 
@@ -49,12 +39,12 @@ export default function TaskDisplay(props: { id: string }) {
   return (
     <>
       {tasks.map((e) => (
-        <div className="flex w-full justify-between" key={e.id}>
+        <div className="flex w-full justify-between" key={e._id}>
           <label htmlFor="">
-            {e.name} {e.id}
+            {e.name} {e._id}
           </label>
           <div>
-            <DeleteButton id={e.id} />
+            <DeleteButton id={e._id} />
             <input type="checkbox" name={e.name} id="" />
           </div>
         </div>

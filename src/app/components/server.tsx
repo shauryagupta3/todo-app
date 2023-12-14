@@ -1,23 +1,21 @@
-interface data {
-  task: [];
-  habit: [];
-}
-
 interface quote {
   quote: String;
   character: String;
   anime: string;
 }
 
-function getRandomNumber(min: number, max: number): number {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+interface task {
+  _id: number;
+  name: string;
+  deadline: string;
 }
 
 export async function getData() {
-  const response = await fetch("http://localhost:3001/api/tasks");
+  const response = await fetch(
+    "http://localhost:3001/api/tasks/6571a3b05caf7cfc92230637"
+  );
   const data = await response.json();
-  console.log(data.tasks);
-  return data as data;
+  return data as task[];
 }
 
 export async function postTask(obj: {}) {

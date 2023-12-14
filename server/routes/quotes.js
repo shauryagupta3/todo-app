@@ -1,20 +1,27 @@
 const express = require('express');
 const router = express.Router();
-const quotes = require('../quotes.json');
+const { Quote } = require('../models/index')
 
-router.get('/', (req, res) => {
-    res.header('Content-Type', 'application/json');
-    res.send(JSON.stringify(quotes));
+router.get('/', async (req, res) => {
+    const QUOTES = await Quote.find()
+    res.send(QUOTES);
 });
 
-router.get('/random', (req, res) => {
-    const randomIndex = Math.floor(Math.random() * quotes.quotes.length);
-    res.send(JSON.stringify(quotes.quotes[randomIndex]));
+router.post('/', async (req, res) => {
+    try {
+        const quote = await Quote.create({
+            quote: req.body.quote,
+            character: req.body.character,
+            anime: req.body.anime
+        })
+        res.send(quote).status(201).end()
+    } catch (err) { console.log(err.message) }
 });
 
-router.get('/:id', (req, res) => {
-    const id = req.params.id;
-    res.send(JSON.stringify(quotes.quotes[id]));
+router.get('/random', async (req, res) => {
+    const QUOTES = await Quote.find()
+    const randomIndex = Math.floor(Math.random() * QUOTES.length);
+    res.send(JSON.stringify(QUOTES[randomIndex]));
 });
 
 module.exports = router;

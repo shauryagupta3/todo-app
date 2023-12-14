@@ -1,3 +1,9 @@
+import { LoginForm } from "../components/LoginForm";
+
 export default function Page() {
-  return <h1>Hello, this is user sg !</h1>;
+  return (
+    <div className="container flex flex-col h-full justify-between">
+      <LoginForm/>
+    </div>
+  );
 }

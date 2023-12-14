@@ -1,46 +1,47 @@
 const express = require('express');
 const router = express.Router();
-var tasks = require('../db.json');
-// const tasks
+const { User, Task, Habit } = require('../models/index')
 
-router.get('/', (req, res) => {
-    res.header('Content-Type', 'application/json');
-    console.log(tasks.task)
-    res.send(JSON.stringify(tasks));
+router.get('/:id', async (req, res) => {
+    const TASKS = await Task.find({ user: req.params.id })
+    res.send(TASKS);
 });
 
-router.post('/', (req, res) => {
-    const newTask = req.body;
-    const typeOfTask = newTask.type;
-    var currentTasks = []
-    typeOfTask === "task" || typeOfTask === "habit" ? null : res.send("error type").status(404).end()
-    typeOfTask === "habit" ? currentTasks = tasks.habit : currentTasks = tasks.task
-    var prevID = 0
-    if (currentTasks.length > 0) {
-        prevID = currentTasks[currentTasks.length - 1].id
-    }
-    newTask.id = Number(prevID) + 1
-    taskToPush = {
-        name:newTask.name,
-        deadline:newTask.deadline,
-        done:newTask.done
-    }
-    currentTasks.push(taskToPush)
-    typeOfTask === "habit" ? tasks.habit = currentTasks : tasks.task = currentTasks
-    res.send('done').status(200).end();
+
+router.post('/:id', async (req, res) => {
+    try {
+        const date = new Date();
+        let day = date.getDate();
+        let month = date.getMonth() + 1;
+        let year = date.getFullYear();
+
+        const TodayDate = `${day}-${month}-${year}`;
+        const TomDate = `${day + 1}-${month}-${year}`;
+        var defaultDate = TodayDate
+        const argsDate = req.query.date
+        if (argsDate == "tom") {
+            defaultDate = TomDate
+        }
+        const task = await Task.create({
+            name: req.body.name,
+            deadline: defaultDate,
+            priority: 3,
+            user: req.params.id
+        })
+        const user = await User.findById(req.params.id)
+        if (user) {
+            user.tasks.push(task)
+            user.save()
+        }
+        res.send(task).status(201).end()
+    } catch (err) { console.log(err.message) }
 });
 
-router.delete('/:id', (req, res) => {
-    console.log("deleting")
-    var currentTasks = tasks.task;
-    const findTask = currentTasks.find(e => e.id == req.params.id)
-    if (findTask) {
-        const newTasks = currentTasks.filter((task) => task.id != req.params.id)
-        tasks.task = newTasks
-        res.send("deleted").status(200).end()
-
-    }
-    res.send("error").status(404).end()
+router.delete('/:id', async (req, res) => {
+    try {
+        const deleteTask = await Task.deleteOne({ _id: req.params.id })
+        res.send(deleteTask).status(201).end()
+    } catch (err) { console.log(err.message) }
 })
 
 module.exports = router;
